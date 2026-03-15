@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electron', {
   minimizeWindow: () => ipcRenderer.send('minimize-window'),
   maximizeWindow: () => ipcRenderer.send('maximize-window'),
   closeWindow: () => ipcRenderer.send('close-window'),
+  hideBrowserView: () => ipcRenderer.send('hide-browser-view'),
+  showBrowserView: () => ipcRenderer.send('show-browser-view'),
   onTabTitleUpdated: (callback) => ipcRenderer.on('tab-title-updated', (event, data) => callback(data)),
   onTabFaviconUpdated: (callback) => ipcRenderer.on('tab-favicon-updated', (event, data) => callback(data)),
   onTabLoading: (callback) => ipcRenderer.on('tab-loading', (event, data) => callback(data)),

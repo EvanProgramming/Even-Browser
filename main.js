@@ -21,7 +21,6 @@ function createWindow() {
     maximizable: true,
     closable: true,
     backgroundMaterial: process.platform === 'win32' ? 'mica' : undefined,
-    roundedCorners: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       sandbox: true,
@@ -32,6 +31,32 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, 'src/ui/index.html'));
 
   mainWindow.on('resize', () => {
+    const bounds = mainWindow.getBounds();
+    const currentView = views.get(currentTabId);
+    if (currentView) {
+      currentView.setBounds({
+        x: 0,
+        y: 90,
+        width: bounds.width,
+        height: bounds.height - 90
+      });
+    }
+  });
+
+  mainWindow.on('maximize', () => {
+    const bounds = mainWindow.getBounds();
+    const currentView = views.get(currentTabId);
+    if (currentView) {
+      currentView.setBounds({
+        x: 0,
+        y: 90,
+        width: bounds.width,
+        height: bounds.height - 90
+      });
+    }
+  });
+
+  mainWindow.on('unmaximize', () => {
     const bounds = mainWindow.getBounds();
     const currentView = views.get(currentTabId);
     if (currentView) {
@@ -104,7 +129,18 @@ function createTab(url) {
 function switchTab(tabId) {
   if (!views.has(tabId)) return;
 
-  mainWindow.setBrowserView(views.get(tabId));
+  // 移除当前视图
+  if (currentTabId && views.has(currentTabId)) {
+    mainWindow.removeBrowserView(views.get(currentTabId));
+  }
+
+  // 添加新视图
+  const view = views.get(tabId);
+  mainWindow.addBrowserView(view);
+  
+  // 设置视图层级低于主窗口内容
+  view.setAutoResize({ width: true, height: true });
+  
   currentTabId = tabId;
   mainWindow.webContents.send('tab-switched', tabId);
 }
@@ -203,4 +239,16 @@ ipcMain.on('maximize-window', () => {
 
 ipcMain.on('close-window', () => {
   mainWindow.close();
+});
+
+ipcMain.on('hide-browser-view', () => {
+  if (currentTabId && views.has(currentTabId)) {
+    mainWindow.removeBrowserView(views.get(currentTabId));
+  }
+});
+
+ipcMain.on('show-browser-view', () => {
+  if (currentTabId && views.has(currentTabId)) {
+    mainWindow.addBrowserView(views.get(currentTabId));
+  }
 });

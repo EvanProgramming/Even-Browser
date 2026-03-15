@@ -360,13 +360,243 @@ class Browser {
   }
 
   showShareMenu() {
-    // Placeholder for share menu
-    console.log('Show share menu');
+    if (!this.currentTabId) return;
+    
+    const tab = this.tabs.get(this.currentTabId);
+    if (!tab || !tab.url) return;
+    
+    // Hide BrowserView temporarily
+    window.electron.hideBrowserView();
+    
+    // Create share menu
+    const shareMenu = document.createElement('div');
+    shareMenu.className = 'share-menu';
+    shareMenu.style.cssText = `
+      position: fixed;
+      top: 60px;
+      right: 16px;
+      background: var(--bg-secondary);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: var(--shadow-medium);
+      z-index: 9999;
+      min-width: 200px;
+      animation: dropdown-appear var(--duration-normal) var(--ease-out-apple);
+    `;
+    
+    shareMenu.innerHTML = `
+      <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">分享链接</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="share-option" data-action="copy">
+          <span style="margin-right: 8px;">📋</span> 复制链接
+        </button>
+        <button class="share-option" data-action="email">
+          <span style="margin-right: 8px;">📧</span> 通过邮件发送
+        </button>
+        <button class="share-option" data-action="twitter">
+          <span style="margin-right: 8px;">🐦</span> 分享到 X
+        </button>
+      </div>
+    `;
+    
+    // Add share menu to body
+    document.body.appendChild(shareMenu);
+    
+    // Add event listeners
+    shareMenu.querySelectorAll('.share-option').forEach(button => {
+      button.style.cssText = `
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 13px;
+        cursor: pointer;
+        transition: background var(--duration-fast) var(--ease-out-apple);
+        width: 100%;
+        text-align: left;
+      `;
+      
+      button.addEventListener('mouseenter', () => {
+        button.style.background = 'rgba(0, 0, 0, 0.05)';
+      });
+      
+      button.addEventListener('mouseleave', () => {
+        button.style.background = 'transparent';
+      });
+      
+      button.addEventListener('click', () => {
+        const action = button.dataset.action;
+        switch (action) {
+          case 'copy':
+            navigator.clipboard.writeText(tab.url).then(() => {
+              this.showNotification('链接已复制到剪贴板');
+            });
+            break;
+          case 'email':
+            window.open(`mailto:?subject=Check this out&body=${encodeURIComponent(tab.url)}`);
+            break;
+          case 'twitter':
+            window.open(`https://x.com/intent/tweet?url=${encodeURIComponent(tab.url)}`);
+            break;
+        }
+        shareMenu.remove();
+        // Show BrowserView again
+        window.electron.showBrowserView();
+      });
+    });
+    
+    // Close menu when clicking outside
+    setTimeout(() => {
+      document.addEventListener('click', function closeMenu(e) {
+        if (!shareMenu.contains(e.target) && e.target.id !== 'share-btn') {
+          shareMenu.remove();
+          document.removeEventListener('click', closeMenu);
+          // Show BrowserView again
+          window.electron.showBrowserView();
+        }
+      });
+    }, 100);
   }
 
   showTabsOverview() {
-    // Placeholder for tabs overview
-    console.log('Show tabs overview');
+    // Hide BrowserView temporarily
+    window.electron.hideBrowserView();
+    
+    // Create tabs overview
+    const tabsOverview = document.createElement('div');
+    tabsOverview.className = 'tabs-overview';
+    tabsOverview.style.cssText = `
+      position: fixed;
+      top: 60px;
+      right: 16px;
+      background: var(--bg-secondary);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: var(--shadow-medium);
+      z-index: 9999;
+      min-width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      animation: dropdown-appear var(--duration-normal) var(--ease-out-apple);
+    `;
+    
+    const tabs = Array.from(this.tabs.entries());
+    if (tabs.length === 0) {
+      tabsOverview.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-secondary); font-size: 14px;">没有打开的标签页</div>';
+    } else {
+      tabsOverview.innerHTML = `
+        <div style="font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">标签页</div>
+        <div class="tabs-list" style="display: flex; flex-direction: column; gap: 4px;"></div>
+      `;
+      
+      const tabsList = tabsOverview.querySelector('.tabs-list');
+      tabs.forEach(([tabId, tab]) => {
+        const tabItem = document.createElement('div');
+        tabItem.className = 'tab-item';
+        tabItem.style.cssText = `
+          display: flex;
+          align-items: center;
+          padding: 8px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all var(--duration-fast) var(--ease-out-apple);
+          ${tabId === this.currentTabId ? 'background: rgba(0, 122, 255, 0.1);' : 'background: transparent;'}
+        `;
+        
+        tabItem.innerHTML = `
+          <div class="tab-item-icon" style="width: 16px; height: 16px; margin-right: 8px; display: flex; align-items: center; justify-content: center;">🌐</div>
+          <div class="tab-item-title" style="flex: 1; font-size: 13px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${tab.title || tab.url}</div>
+          <button class="tab-item-close" data-tab-id="${tabId}" style="width: 16px; height: 16px; border: none; border-radius: 50%; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;">×</button>
+        `;
+        
+        tabItem.addEventListener('mouseenter', () => {
+          tabItem.style.background = 'rgba(0, 0, 0, 0.05)';
+        });
+        
+        tabItem.addEventListener('mouseleave', () => {
+          tabItem.style.background = tabId === this.currentTabId ? 'rgba(0, 122, 255, 0.1)' : 'background: transparent;';
+        });
+        
+        tabItem.addEventListener('click', (e) => {
+          if (!e.target.closest('.tab-item-close')) {
+            this.switchTab(tabId);
+            window.electron.switchTab(tabId);
+            tabsOverview.remove();
+            // Show BrowserView again
+            window.electron.showBrowserView();
+          }
+        });
+        
+        const closeButton = tabItem.querySelector('.tab-item-close');
+        closeButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const closeTabId = parseInt(closeButton.dataset.tabId);
+          this.closeTab(closeTabId);
+          tabItem.remove();
+          if (tabsList.children.length === 0) {
+            tabsOverview.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-secondary); font-size: 14px;">没有打开的标签页</div>';
+          }
+        });
+        
+        tabsList.appendChild(tabItem);
+      });
+    }
+    
+    // Add tabs overview to body
+    document.body.appendChild(tabsOverview);
+    
+    // Close overview when clicking outside
+    setTimeout(() => {
+      document.addEventListener('click', function closeOverview(e) {
+        if (!tabsOverview.contains(e.target) && e.target.id !== 'tabs-btn') {
+          tabsOverview.remove();
+          document.removeEventListener('click', closeOverview);
+          // Show BrowserView again
+          window.electron.showBrowserView();
+        }
+      });
+    }, 100);
+  }
+
+  showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.style.cssText = `
+      position: fixed;
+      top: 60px;
+      right: 16px;
+      background: var(--bg-secondary);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-medium);
+      z-index: 9999;
+      font-size: 14px;
+      color: var(--text-primary);
+      animation: dropdown-appear var(--duration-normal) var(--ease-out-apple);
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 2 seconds
+    setTimeout(() => {
+      notification.style.animation = 'window-fade-in var(--duration-normal) var(--ease-in-apple) reverse';
+      setTimeout(() => {
+        notification.remove();
+      }, 250);
+    }, 2000);
   }
 }
 
