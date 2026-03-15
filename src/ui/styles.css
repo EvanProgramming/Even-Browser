@@ -57,6 +57,7 @@ body {
 .liquid-glass {
   position: relative;
   backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
+  -webkit-backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.65));
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -104,10 +105,6 @@ body {
 
 .liquid-glass:hover::after {
   opacity: 1;
-}
-
-.liquid-glass {
-  filter: url(#liquid-glass-noise);
 }
 
 /* Toolbar */

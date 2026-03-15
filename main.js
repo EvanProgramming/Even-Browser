@@ -10,16 +10,21 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    titleBarStyle: 'hidden',
     trafficLightPosition: process.platform === 'darwin' ? { x: 18, y: 18 } : undefined,
     vibrancy: process.platform === 'darwin' ? 'under-window' : undefined,
     transparent: true,
     backgroundColor: '#00000000',
-    frame: process.platform !== 'win32',
+    frame: false,
+    resizable: true,
+    minimizable: true,
+    maximizable: true,
+    closable: true,
     backgroundMaterial: process.platform === 'win32' ? 'mica' : undefined,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      sandbox: true
+      sandbox: true,
+      backgroundThrottling: false
     }
   });
 
