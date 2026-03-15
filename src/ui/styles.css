@@ -116,6 +116,16 @@ body {
   gap: 12px;
   position: relative;
   z-index: 1000;
+  backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
+  -webkit-backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.65));
+  border-bottom: 1px solid var(--border);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toolbar {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.72), rgba(58, 58, 60, 0.65));
+  }
 }
 
 .traffic-light-placeholder {
@@ -296,6 +306,16 @@ body {
   gap: 8px;
   position: relative;
   z-index: 999;
+  backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
+  -webkit-backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.65));
+  border-bottom: 1px solid var(--border);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tab-bar {
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.72), rgba(58, 58, 60, 0.65));
+  }
 }
 
 .tabs-container {
