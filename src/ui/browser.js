@@ -178,7 +178,7 @@ class Browser {
     });
   }
 
-  createTab(url = 'https://www.google.com') {
+  createTab(url = '') {
     window.electron.createTab(url);
   }
 
@@ -196,7 +196,13 @@ class Browser {
     // Update address bar with current tab URL
     const tab = this.tabs.get(tabId);
     if (tab) {
-      document.getElementById('address-input').value = tab.url || '';
+      // Check if it's the home page
+      if (tab.url.startsWith('file://') && tab.url.includes('src/pages/home.html')) {
+        document.getElementById('address-input').value = '';
+        document.getElementById('address-input').placeholder = '搜索或输入网址';
+      } else {
+        document.getElementById('address-input').value = tab.url || '';
+      }
     }
   }
 
@@ -278,7 +284,13 @@ class Browser {
 
   updateTabUrl(tabId, url) {
     if (tabId === this.currentTabId) {
-      document.getElementById('address-input').value = url;
+      // Check if it's the home page
+      if (url.startsWith('file://') && url.includes('src/pages/home.html')) {
+        document.getElementById('address-input').value = '';
+        document.getElementById('address-input').placeholder = '搜索或输入网址';
+      } else {
+        document.getElementById('address-input').value = url;
+      }
     }
 
     // Update tab data
@@ -289,7 +301,9 @@ class Browser {
     } else {
       // Add new tab to map
       this.tabs.set(tabId, { url, title: '' });
-      this.createTabElement(tabId, url);
+      // For home page, show a better title in tab
+      const displayUrl = url.startsWith('file://') && url.includes('src/pages/home.html') ? '主页' : url;
+      this.createTabElement(tabId, displayUrl);
     }
   }
 

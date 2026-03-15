@@ -73,7 +73,36 @@ function createWindow() {
     mainWindow = null;
   });
 
-  createTab('https://www.google.com');
+  // Double click on title bar to maximize/minimize window (Windows default behavior)
+  let lastClickTime = 0;
+  mainWindow.webContents.on('mousedown', (event) => {
+    // Check if click is on the title bar area (top 52px - toolbar height)
+    if (event.y < 52) {
+      // Get the browser window bounds to calculate click position relative to window
+      const windowBounds = mainWindow.getBounds();
+      const windowWidth = windowBounds.width;
+      
+      // Calculate address bar area (assuming it's centered with max width 640px)
+      const addressBarLeft = (windowWidth - 640) / 2;
+      const addressBarRight = addressBarLeft + 640;
+      
+      // Only trigger if click is outside the address bar area
+      if (event.x < addressBarLeft || event.x > addressBarRight) {
+        const currentTime = Date.now();
+        if (currentTime - lastClickTime < 300) {
+          // Double click detected
+          if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+          } else {
+            mainWindow.maximize();
+          }
+        }
+        lastClickTime = currentTime;
+      }
+    }
+  });
+
+  createTab('file://' + path.join(__dirname, 'src/pages/home.html'));
 }
 
 function createTab(url) {
@@ -154,7 +183,7 @@ function closeTab(tabId) {
     views.delete(tabId);
 
     if (views.size === 0) {
-      createTab('https://www.google.com');
+      createTab('file://' + path.join(__dirname, 'src/pages/home.html'));
     } else if (currentTabId === tabId) {
       const firstTabId = Array.from(views.keys())[0];
       switchTab(firstTabId);
@@ -186,7 +215,7 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('create-tab', (event, url) => {
-  createTab(url || 'https://www.google.com');
+  createTab(url || 'file://' + path.join(__dirname, 'src/pages/home.html'));
 });
 
 ipcMain.on('switch-tab', (event, tabId) => {

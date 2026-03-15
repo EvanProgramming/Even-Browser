@@ -15,12 +15,12 @@
       --duration-normal: 0.25s;
       --duration-slow: 0.35s;
       --duration-slower: 0.5s;
-      --bg-primary: rgba(246, 246, 246, 0.72);
-      --bg-secondary: rgba(255, 255, 255, 0.85);
-      --text-primary: #1d1d1f;
-      --text-secondary: #86868b;
-      --accent-blue: #007aff;
-      --border: rgba(0, 0, 0, 0.08);
+      --bg-primary: rgba(255, 255, 255, 0.9);
+      --bg-secondary: rgba(240, 240, 240, 0.85);
+      --text-primary: #000000;
+      --text-secondary: #9c9c9c;
+      --accent-blue: #00f0FF;
+      --border: rgba(156, 156, 156, 0.2);
       --shadow-soft: 0 0.5px 1px rgba(0, 0, 0, 0.1);
       --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.1);
       --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -28,12 +28,12 @@
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-primary: rgba(30, 30, 30, 0.72);
-        --bg-secondary: rgba(58, 58, 60, 0.85);
-        --text-primary: #f5f5f7;
-        --text-secondary: #98989d;
-        --accent-blue: #0a84ff;
-        --border: rgba(255, 255, 255, 0.08);
+        --bg-primary: rgba(0, 0, 0, 0.9);
+        --bg-secondary: rgba(20, 20, 20, 0.85);
+        --text-primary: #ffffff;
+        --text-secondary: #9c9c9c;
+        --accent-blue: #00f0FF;
+        --border: rgba(156, 156, 156, 0.2);
         --shadow-soft: 0 0.5px 1px rgba(0, 0, 0, 0.2);
         --shadow-medium: 0 2px 8px rgba(0, 0, 0, 0.3);
         --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -48,7 +48,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -58,6 +58,12 @@
       position: relative;
     }
 
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+      }
+    }
+
     body::before {
       content: '';
       position: absolute;
@@ -65,7 +71,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300f0ff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
       z-index: -1;
     }
 
@@ -88,13 +94,11 @@
       margin-bottom: 16px;
       animation: logo-appear 1s var(--spring-apple);
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      letter-spacing: -0.5px;
     }
 
     .logo span {
-      background: linear-gradient(135deg, var(--accent-blue), #9c27b0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--accent-blue);
     }
 
     .search-container {
@@ -136,10 +140,10 @@
       transform: translateY(-50%);
       width: 40px;
       height: 40px;
-      border: none;
+      border: 1px solid var(--accent-blue);
       border-radius: 50%;
-      background: var(--accent-blue);
-      color: white;
+      background: transparent;
+      color: var(--accent-blue);
       font-size: 16px;
       cursor: pointer;
       transition: all var(--duration-fast) var(--ease-out-apple);
@@ -149,7 +153,8 @@
     }
 
     .search-button:hover {
-      background: #0056b3;
+      background: var(--accent-blue);
+      color: var(--bg-primary);
       transform: translateY(-50%) scale(1.05);
     }
 
@@ -173,7 +178,7 @@
       gap: 8px;
       width: 80px;
       height: 80px;
-      border-radius: 16px;
+      border-radius: 12px;
       background: var(--bg-secondary);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -185,8 +190,9 @@
     }
 
     .quick-link:hover {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: var(--shadow-strong);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: var(--shadow-medium);
+      border-color: var(--accent-blue);
       background: var(--bg-primary);
     }
 
@@ -202,28 +208,20 @@
       text-overflow: ellipsis;
     }
 
-    .quote {
+    .footer {
       position: absolute;
-      bottom: 32px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
       max-width: 600px;
       padding: 0 24px;
-      animation: quote-appear 1s var(--spring-apple) 0.6s both;
+      animation: footer-appear 1s var(--spring-apple) 0.6s both;
     }
 
-    .quote-text {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      font-style: italic;
-    }
-
-    .quote-author {
+    .footer-text {
       font-size: 12px;
       color: var(--text-secondary);
-      opacity: 0.8;
     }
 
     @keyframes logo-appear {
@@ -259,7 +257,7 @@
       }
     }
 
-    @keyframes quote-appear {
+    @keyframes footer-appear {
       from {
         opacity: 0;
         transform: translateX(-50%) translateY(20px);
@@ -325,9 +323,8 @@
     </div>
   </div>
   
-  <div class="quote">
-    <div class="quote-text">"The future belongs to those who believe in the beauty of their dreams."</div>
-    <div class="quote-author">- Eleanor Roosevelt</div>
+  <div class="footer">
+    <div class="footer-text">Even Browser - 优雅的浏览体验</div>
   </div>
 
   <script>
