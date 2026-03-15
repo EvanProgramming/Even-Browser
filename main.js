@@ -21,6 +21,7 @@ function createWindow() {
     maximizable: true,
     closable: true,
     backgroundMaterial: process.platform === 'win32' ? 'mica' : undefined,
+    roundedCorners: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       sandbox: true,
@@ -90,6 +91,12 @@ function createTab(url) {
     mainWindow.webContents.send('tab-url-updated', { tabId, url });
   });
 
+  // 处理链接点击，在新标签中打开
+  view.webContents.setWindowOpenHandler((details) => {
+    createTab(details.url);
+    return { action: 'deny' };
+  });
+
   switchTab(tabId);
   return tabId;
 }
@@ -106,17 +113,19 @@ function closeTab(tabId) {
   if (!views.has(tabId)) return;
 
   const view = views.get(tabId);
-  view.destroy();
-  views.delete(tabId);
+  if (view) {
+    // 在 Electron 33.0+ 中，BrowserView 不需要手动销毁，移除引用后会被垃圾回收
+    views.delete(tabId);
 
-  if (views.size === 0) {
-    createTab('https://www.google.com');
-  } else if (currentTabId === tabId) {
-    const firstTabId = Array.from(views.keys())[0];
-    switchTab(firstTabId);
+    if (views.size === 0) {
+      createTab('https://www.google.com');
+    } else if (currentTabId === tabId) {
+      const firstTabId = Array.from(views.keys())[0];
+      switchTab(firstTabId);
+    }
+
+    mainWindow.webContents.send('tab-closed', tabId);
   }
-
-  mainWindow.webContents.send('tab-closed', tabId);
 }
 
 app.whenReady().then(() => {
@@ -178,4 +187,20 @@ ipcMain.on('reload', (event, tabId) => {
   if (view) {
     view.webContents.reload();
   }
+});
+
+ipcMain.on('minimize-window', () => {
+  mainWindow.minimize();
+});
+
+ipcMain.on('maximize-window', () => {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
+  }
+});
+
+ipcMain.on('close-window', () => {
+  mainWindow.close();
 });

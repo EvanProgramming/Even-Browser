@@ -12,6 +12,19 @@ class Browser {
   }
 
   bindEvents() {
+    // Window control buttons
+    document.getElementById('minimize-btn').addEventListener('click', () => {
+      window.electron.minimizeWindow();
+    });
+
+    document.getElementById('maximize-btn').addEventListener('click', () => {
+      window.electron.maximizeWindow();
+    });
+
+    document.getElementById('close-btn').addEventListener('click', () => {
+      window.electron.closeWindow();
+    });
+
     // New tab button
     document.getElementById('new-tab-btn').addEventListener('click', () => {
       this.createTab();

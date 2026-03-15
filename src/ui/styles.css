@@ -51,6 +51,7 @@ body {
   background: transparent;
   overflow: hidden;
   animation: window-fade-in var(--duration-slower) var(--ease-out-apple);
+  border-radius: 12px;
 }
 
 /* Liquid Glass Effect */
@@ -120,6 +121,13 @@ body {
   -webkit-backdrop-filter: saturate(180%) blur(20px) brightness(1.05);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.65));
   border-bottom: 1px solid var(--border);
+  -webkit-app-region: drag;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.window-controls, .nav-buttons, .address-bar-container, .toolbar-buttons {
+  -webkit-app-region: no-drag;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -128,9 +136,48 @@ body {
   }
 }
 
-.traffic-light-placeholder {
-  width: 68px;
-  height: 32px;
+.window-controls {
+  display: flex;
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.window-btn {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  transition: all var(--duration-fast) var(--ease-out-apple);
+}
+
+.window-btn.minimize {
+  background: #FFCC00;
+  color: #000;
+}
+
+.window-btn.maximize {
+  background: #00CC00;
+  color: #000;
+}
+
+.window-btn.close {
+  background: #FF3B30;
+  color: #fff;
+}
+
+.window-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.window-btn:active {
+  transform: scale(0.9);
 }
 
 .nav-buttons {
