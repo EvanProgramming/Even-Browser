@@ -1,0 +1,16 @@
+{
+  "name": "even-browser",
+  "version": "1.0.0",
+  "description": "A liquid glass style browser based on Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron ."
+  },
+  "dependencies": {
+    "electron": "^33.0.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "nngceckbapebfimnlniiiahkandclblb",
+    "name": "Bitwarden",
+    "description": "安全的密码管理器，自动填充登录信息",
+    "category": "安全",
+    "icon": "🔐",
+    "featured": true
+  },
+  {
+    "id": "cjpalhdlnbpafiamejdnhcphjbkeiagm",
+    "name": "uBlock Origin",
+    "description": "高效的广告拦截器，保护隐私",
+    "category": "安全",
+    "icon": "🛡️",
+    "featured": true
+  },
+  {
+    "id": "eimadpbcbfnmbkopoojfekhnkhdbieeh",
+    "name": "Dark Reader",
+    "description": "为所有网站启用暗色模式",
+    "category": "工具",
+    "icon": "🌙",
+    "featured": true
+  },
+  {
+    "id": "pkehgijcmpdhfbdbbnkijodmdjhbjlgp",
+    "name": "Privacy Badger",
+    "description": "自动阻止跟踪器，保护隐私",
+    "category": "安全",
+    "icon": "🔒",
+    "featured": true
+  }
+]
